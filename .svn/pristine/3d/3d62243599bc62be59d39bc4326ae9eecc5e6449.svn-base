@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="output"><source path="C:\Users\COM\.android\build-cache\13d228def95cebf9f9086564ba2a90488024d00a\output\assets"/></dataSet><dataSet config="main"><source path="D:\android\MDEX-Venus-02b-070101\app\src\main\assets"/><source path="D:\android\MDEX-Venus-02b-070101\app\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="D:\android\MDEX-Venus-02b-070101\app\src\debug\assets"/></dataSet></merger>

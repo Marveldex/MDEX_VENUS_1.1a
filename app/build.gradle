@@ -1,11 +1,20 @@
 apply plugin: 'com.android.application'
 android {
+    signingConfigs {
+        config {
+            keyAlias 'Sample'
+            keyPassword 'mdex1234'
+            storeFile file('D:/Android APK/VENUS_SAMPLE_APK_20170406/Venus_sample.jks')
+            storePassword 'mdex1234'
+        }
+    }
     compileSdkVersion 18
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId 'com.marveldex.venusAlpha01a'
+        applicationId 'com.mdex.venus_Sample_31CH'
         minSdkVersion 18
         targetSdkVersion 18
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -15,8 +24,11 @@ android {
     }
     productFlavors {
     }
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
 }
 
 dependencies {
     compile 'com.android.support:support-v4:23.0.0'
+
 }

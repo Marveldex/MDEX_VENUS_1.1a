@@ -22,7 +22,7 @@
   -->
 <resources>
 
-    <string name="app_name">Venus Engineer (V.0.2-170101)</string>
+    <string name="app_name">Venus Engineer - 31CH (V.0.2-170417)</string>
     <string name="popup_title">Quit Health seat</string>
     <string name="device">Device:</string>
     <string name="no_device">&lt;Select a device&gt;</string>

@@ -5,58 +5,63 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/btn_select"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:text="Connect" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:layout_weight="0.31"
-        android:orientation="vertical" >
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="Connect" />
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/RelativeLayout1"
             android:layout_width="match_parent"
             android:layout_height="292dp"
             android:layout_weight="4.11"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/TV_BatteryLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:textSize="14dp"
+                android:layout_alignParentTop="true"
                 android:maxLength="120"
-                android:text="Battery Level :" />
+                android:text="Battery Level :"
+                android:textSize="14dp" />
+
             <TextView
                 android:id="@+id/TV_CurTime"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:textSize="14dp"
+                android:layout_alignParentTop="true"
                 android:maxLength="120"
-                android:text="Last : " />
+                android:text="Last : "
+                android:textSize="14dp" />
+
+
 
             <RadioGroup
                 android:id="@+id/RG_BOARD_SEL"
-                android:layout_below="@id/TV_BatteryLevel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/TV_BatteryLevel"
+                android:layout_toEndOf="@+id/space_COM"
                 android:orientation="horizontal">
+
                 <RadioButton
                     android:id="@+id/RB_MAIN"
                     android:layout_width="wrap_content"
@@ -64,12 +69,13 @@
                     android:onClick="onRadioClicked"
                     android:text="Main board"
                     android:visibility="invisible" />
+
                 <RadioButton
                     android:id="@+id/RB_SHIELD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="onRadioClicked"
                     android:checked="true"
+                    android:onClick="onRadioClicked"
                     android:text="Shield"
                     android:visibility="invisible" />
 
@@ -79,286 +85,327 @@
                 android:id="@+id/space_COM"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/TV_BatteryLevel"
-                android:layout_alignParentStart="true" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_COM_SERO"
                 android:layout_width="5dp"
-                android:src="@drawable/test_sero"
+                android:layout_height="150dp"
+                android:layout_below="@+id/TV_BatteryLevel"
                 android:layout_toRightOf="@+id/space_COM"
                 android:contentDescription="iv_com_seroline"
-                android:layout_below="@+id/TV_BatteryLevel"
-                android:layout_height="150dp" />
+                android:src="@drawable/test_sero"
+                android:visibility="gone" />
 
             <Space
                 android:id="@+id/space_COC_LEFT"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/TV_BatteryLevel"
-                android:layout_alignParentStart="true" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_COC_SERO_LEFT"
                 android:layout_width="5dp"
-                android:src="@drawable/coc_sero_left"
+                android:layout_height="150dp"
+                android:layout_below="@+id/TV_BatteryLevel"
                 android:layout_toRightOf="@+id/space_COC_LEFT"
                 android:contentDescription="iv_com_seroline"
-                android:layout_below="@+id/TV_BatteryLevel"
-                android:layout_height="150dp" />
+                android:src="@drawable/coc_sero_left"
+                android:visibility="gone" />
 
             <Space
                 android:id="@+id/space_COC_RIGHT"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/TV_BatteryLevel"
-                android:layout_alignParentStart="true" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_COC_SERO_RIGHT"
                 android:layout_width="5dp"
-                android:src="@drawable/coc_sero_right"
-                android:layout_toRightOf="@+id/space_COC_RIGHT"
-                android:contentDescription="iv_com_seroline"
+                android:layout_height="150dp"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/TV_BatteryLevel"
-                android:layout_height="150dp" />
+                android:contentDescription="iv_com_seroline"
+                android:src="@drawable/coc_sero_right"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/LL_CHAIR_CELL_ARRAY"
-                android:layout_below="@+id/RG_BOARD_SEL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/RG_BOARD_SEL"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:id="@+id/LL_ROW0"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/TV_CHAIR_0_0"
-                        android:layout_width="30dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="0_0"/>
+                        android:text="1" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_0_1"
-                        android:layout_width="30dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="0-1"/>
+                        android:text="2" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_0_2"
-                        android:layout_width="30dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="0_2"/>
+                        android:text="3" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_0_3"
-                        android:layout_width="30dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="0_3"/>
+                        android:text="4" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_0_4"
-                        android:layout_width="30dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="0_4"/>
+                        android:text="5" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_0_5"
-                        android:layout_width="20dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="0_5"/>
+                        android:text="6" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_6"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="7" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_7"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="8" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_8"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="9" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_9"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="10" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_10"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="11" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_11"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="12" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_12"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="13" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_13"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="14" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_14"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="15" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_0_15"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="16" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/LL_ROW1"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_0"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_0"/>
+                        android:text="17" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_1"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_1"/>
+                        android:text="18" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_2"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_2"/>
+                        android:text="19" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_3"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_3"/>
+                        android:text="20" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_4"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_4"/>
+                        android:text="21" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_5"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_5"/>
+                        android:text="22" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_6"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_6"/>
+                        android:text="23" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_7"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_7"/>
+                        android:text="24" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_8"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_8"/>
+                        android:text="25" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_9"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="1_9"/>
+                        android:text="26" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_10"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="110"/>
+                        android:text="27" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_11"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="111"/>
+                        android:text="28" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_12"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="112"/>
+                        android:text="29" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_13"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="113"/>
+                        android:text="30" />
+
                     <TextView
                         android:id="@+id/TV_CHAIR_1_14"
-                        android:layout_width="24dp"
+                        android:layout_width="23dp"
                         android:layout_height="40dp"
-                        android:text="114"/>
+                        android:text="31" />
+
+                    <TextView
+                        android:id="@+id/TV_CHAIR_1_15"
+                        android:layout_width="23dp"
+                        android:layout_height="40dp"
+                        android:text="32" />
+
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/LL_ROW2"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal">
 
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_0"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_0"/>
-
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_1"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_1"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_2"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_2"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_3"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_3"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_4"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_4"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_5"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_5"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_6"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_6"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_7"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_7"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_8"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_8"/>
-                    <TextView
-                        android:id="@+id/TV_CHAIR_2_9"
-                        android:layout_width="24dp"
-                        android:layout_height="40dp"
-                        android:text="2_9"/>
-                </LinearLayout>
             </LinearLayout>
+
             <TextView
                 android:id="@+id/TV_COM_LOG"
-                android:layout_below="@+id/LL_CHAIR_CELL_ARRAY"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:text="LOG"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/LL_CHAIR_CELL_ARRAY"
+                android:background="@android:drawable/button_onoff_indicator_on"
                 android:gravity="center"
+                android:text="LOG"
                 android:textSize="18sp"
-                android:background="@android:drawable/button_onoff_indicator_on" />
+                android:visibility="invisible" />
 
             <Button
                 android:id="@+id/Save_Start"
-                android:layout_below="@+id/TV_COM_LOG"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_below="@+id/TV_COM_LOG"
                 android:layout_marginTop="10dp"
-                android:text="Save Start"
-                android:onClick="onClick_Save"
                 android:enabled="true"
-                android:textSize="18sp"/>
+                android:onClick="onClick_Save"
+                android:text="Save Start"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/Save_Stop"
-                android:layout_below="@+id/Save_Start"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:text="Save Stop"
+                android:layout_below="@+id/Save_Start"
                 android:enabled="false"
-                android:visibility="invisible"
                 android:onClick="onClick_Save"
-                android:textSize="18sp"/>
+                android:text="Save Stop"
+                android:textSize="18sp"
+                android:visibility="invisible" />
+
             <TextView
+                android:id="@+id/point"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_above="@+id/sendButton"
                 android:layout_below="@+id/Save_Stop"
-                android:id="@+id/point"
                 android:scrollbars="vertical"
-                android:textAlignment="center"
-                android:layout_above="@+id/sendButton" />
+                android:textAlignment="center" />
 
             <ListView
                 android:id="@+id/listMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/sendButton"
+                android:layout_alignParentLeft="true"
                 android:layout_below="@+id/TV_COM_LOG"
-                android:visibility="invisible"
-                android:layout_alignParentLeft="true">
-            </ListView>
+                android:visibility="invisible"></ListView>
 
             <TextView
                 android:id="@+id/PacketHexaMain"
@@ -366,19 +413,20 @@
                 android:layout_height="30dp"
                 android:layout_above="@+id/PacketHexaShield"
                 android:layout_alignParentLeft="true"
-                android:textSize="14dp"
                 android:maxLength="120"
                 android:text="Hexa data(M)"
+                android:textSize="14dp"
                 android:visibility="invisible" />
+
             <TextView
                 android:id="@+id/PacketHexaShield"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_above="@+id/sendText"
                 android:layout_alignParentLeft="true"
-                android:textSize="14dp"
                 android:maxLength="120"
                 android:text="Hexa data(S)"
+                android:textSize="14dp"
                 android:visibility="invisible" />
 
             <EditText
@@ -388,7 +436,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/sendButton"
-                android:text="send"
                 android:ems="10"
                 android:enabled="false"
                 android:fontFamily="1"
@@ -396,7 +443,8 @@
                 android:maxLength="20"
                 android:maxLines="1"
                 android:shadowRadius="1"
-                android:visibility="visible"/>
+                android:text="version test 2.0.1"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/sendButton"
@@ -406,10 +454,23 @@
                 android:layout_alignParentRight="true"
                 android:enabled="true"
                 android:text="Send"
-                android:visibility="visible"/>
+                android:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/MdexHome"
+                android:layout_width="600px"
+                android:layout_height="100px"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/Save_Stop"
+                android:layout_centerHorizontal="true"
+                android:autoLink="all"
+                android:background="@android:color/transparent"
+                android:src="@drawable/logo"
+                android:text="http://www.mdex.co.kr/" />
 
         </RelativeLayout>
     </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/RelativeLayout2"
@@ -445,6 +506,8 @@
             android:layout_alignParentTop="true"
             android:text="_"
             android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
     </RelativeLayout>
 
 </LinearLayout>
