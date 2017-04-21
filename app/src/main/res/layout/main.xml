@@ -355,6 +355,42 @@
 
             </LinearLayout>
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_below="@+id/TV_COM_LOG"
+                android:id = "@+id/Mid_Space1"/>
+
+            <Button
+                android:id="@+id/Left_On_Off"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:enabled="true"
+                android:text="Left On"
+                android:textSize="18sp"
+                android:layout_marginStart="19dp"
+                android:layout_alignBaseline="@+id/TV_COM_LOG"
+                android:layout_alignBottom="@+id/TV_COM_LOG"
+                android:layout_toEndOf="@+id/space_COM" />
+
+            <Button
+                android:id="@+id/Right_On_Off"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:enabled="true"
+                android:text="Right On"
+                android:textSize="18sp"
+                android:layout_marginStart="260dp"
+                android:layout_alignBaseline="@+id/TV_COM_LOG"
+                android:layout_alignBottom="@+id/TV_COM_LOG"
+                android:layout_toEndOf="@+id/space_COM" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_below="@+id/TV_COM_LOG"
+                android:id = "@+id/Mid_Space2"/>
+
             <TextView
                 android:id="@+id/TV_COM_LOG"
                 android:layout_width="match_parent"

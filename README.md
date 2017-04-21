@@ -1,14 +1,28 @@
-# Android-nRF-UART
+# MDEX_SEAT_31a0
 
-nRF UART app can be used to connect to Bluetooth® Smart devices running a custom Nordic Semiconductor UART service. When connected, the app can send and receive ASCII and UTF-8 text strings. 
+This is Sample Application for MDEX_VENUS board & sensor test
 
-This app works with the ble_app_uart project in the nRF51 SDK and the Bluetooth Smart SDK for Arduino. 
+It can be operated only in Android environment.
 
-This app created as a demonstration for handling 128 bit proprietary UUID service and characteristics. 
+we use BLE 4.0 communication
 
-The current version is 2.0.1 
+================================================================
 
-This source code can be compiled with Android Studio and Gradle. 
+노르딕 nrfUART 소스코드 주소
+https://github.com/hubuhubu/Android-nRF-UART
+
+Main UI 
+<div align = "center">
+<img src="https://github.com/Marveldex/MDEX_SEAR_31a0/blob/master/Image/UI.png" />
+</div>
+
+
+Protocol
+<div align = "center">
+<img src="https://github.com/Marveldex/MDEX_SEAR_31a0/blob/master/Image/protocol.png" />
+</div>
+
+
 
 ### Note
 - Android 4.3 or later is required.

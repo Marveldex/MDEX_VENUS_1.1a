@@ -140,6 +140,9 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
     Button mSave_Start;
     Button mSave_Stop;
+    Button mLeft_Btn;
+    Button mRight_Btn;
+
     private String positionCSV = null;
     Map<String, Object> hmap = null;
     ArrayList<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -178,8 +181,11 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         mSave_Stop = (Button)findViewById(R.id.Save_Stop);
         mPointTxt = (TextView)findViewById(R.id.point);
 
+
         mMdexHome = (ImageButton)findViewById(R.id.MdexHome);
 
+        mLeft_Btn = (Button)findViewById(R.id.Left_On_Off);
+        mRight_Btn = (Button)findViewById(R.id.Right_On_Off);
 
         onCreate_UI();
 
@@ -254,6 +260,85 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         });
      
         // Set initial UI state
+
+        mLeft_Btn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+
+                String message;
+
+                if(mLeft_Btn.getText().toString().equals("Left On")){
+
+                    mLeft_Btn.setText("Left Off");
+
+                    message = "turn on left";
+                    //message = "turn left on";
+
+                }else{
+                    mLeft_Btn.setText("Left On");
+
+                    message = "turn off left";
+                    //message = "turn left off";
+                }
+
+                byte[] value;
+                try {
+                    //send data to service
+                    value = message.getBytes("UTF-8");
+                    mService.writeRXCharacteristic(value);
+                    //Update the log with time stamp
+                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
+                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                    edtMessage.setText("");
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        mRight_Btn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+
+                String message;
+
+                if(mRight_Btn.getText().toString().equals("Right On")){
+
+                    mRight_Btn.setText("Right Off");
+
+                    message = "turn on right";
+                    //message = "turn right on";
+
+                }else{
+                    mRight_Btn.setText("Right On");
+
+                    message = "turn off right";
+                    //message = "turn right off";
+                }
+
+                byte[] value;
+                try {
+                    //send data to service
+                    value = message.getBytes("UTF-8");
+                    mService.writeRXCharacteristic(value);
+                    //Update the log with time stamp
+                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
+                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                    edtMessage.setText("");
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
 
 
     }
