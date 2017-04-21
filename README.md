@@ -1,4 +1,4 @@
-# MDEX_SEAT_31a0
+# MDEX_VENUS_1.1a
 
 This is Sample Application for MDEX_VENUS board & sensor test
 
@@ -13,7 +13,7 @@ https://github.com/hubuhubu/Android-nRF-UART
 
 Main UI 
 <div align = "center">
-<img src="https://github.com/Marveldex/MDEX_SEAR_31a0/blob/master/Image/UI.png" />
+<img src="https://github.com/Marveldex/MDEX_VENUS_1.1a/blob/master/Img/MainUI.png" />
 </div>
 
 
