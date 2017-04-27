@@ -918,21 +918,27 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
                 atvChairCells_Row0[cell_index].setText(String.format("%d", nSensorValue));
                 atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (nSensorValue << 24) );
 
+              /*  if(atvChairCells_Row0[cell_index].getText().toString().length()>2){
+                    atvChairCells_Row0[cell_index].setTextSize(10);
+                }else{
+                    atvChairCells_Row0[cell_index].setTextSize(10);
+                }*/
+
                 if (mSave_Flag==true){
                     //hmap.put("0_" + cell_index ,  atvChairCells_Row0[cell_index].getText());
 
                     String nPoint = atvChairCells_Row0[cell_index].getText().toString();
 
                     if(positionCSV==null){
-                        positionCSV = formatDate + "," + "0_" + cell_index + "," + nPoint + ",";
+                        positionCSV = formatDate + "," + nPoint + ",";
 
                     }else{
 
                         if(cell_index==0){
-                            positionCSV =  positionCSV + formatDate + ","  + "0_" + cell_index + "," + nPoint + ",";
+                            positionCSV =  positionCSV + formatDate + ","  + nPoint + ",";
 
                         }else{
-                            positionCSV =  positionCSV  + "0_" + cell_index + "," + nPoint + ",";
+                            positionCSV =  positionCSV  + nPoint + ",";
                         }
                     }
 
@@ -957,10 +963,10 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
 
                     if(cell_index < 15 ){
-                        positionCSV = positionCSV + "1_" + cell_index + "," + nPoint1 + ",";
+                        positionCSV = positionCSV + nPoint1 + ",";
 
                     }else{
-                        positionCSV =  positionCSV  + "1_" + cell_index + "," + nPoint1 + "\r\n";
+                        positionCSV =  positionCSV  + nPoint1 + "\r\n";
                     }
 
                 }
