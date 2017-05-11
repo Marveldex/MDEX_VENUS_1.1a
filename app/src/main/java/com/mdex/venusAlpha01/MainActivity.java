@@ -114,8 +114,6 @@ import static android.os.SystemClock.elapsedRealtime;
  *
  */
 
-
-
 public class   MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     private static final int REQUEST_SELECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -143,22 +141,18 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     Button mLeft_Btn;
     Button mRight_Btn;
 
-    private String positionCSV = null;
-    Map<String, Object> hmap = null;
+    private String mPosition_Csv = null;
+    Map<String, Object> hash_map = null;
     ArrayList<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     TextView mPointTxt;
 
     ImageButton mMdexHome;
-
-
     int cell_index = 0;
-
 
     long now = System.currentTimeMillis();
     Date date = new Date(now);
     SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMdd_HHmmss");
     String formatDate = sdfNow.format(date);
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,7 +181,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         mLeft_Btn = (Button)findViewById(R.id.Left_On_Off);
         mRight_Btn = (Button)findViewById(R.id.Right_On_Off);
 
-        onCreate_UI();
+        UI_onCreate();
 
         service_init();
        
@@ -260,7 +254,6 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         });
      
         // Set initial UI state
-
         mLeft_Btn.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -338,9 +331,6 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
             }
         });
-
-
-
     }
 
     /**
@@ -437,7 +427,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
             PrintWriter csvWriter;
             csvWriter = new  PrintWriter(new FileWriter(file,true));
 
-            csvWriter.print(positionCSV);
+            csvWriter.print(mPosition_Csv);
             //csvWriter.print("\r\n");
             csvWriter.close();
 
@@ -446,7 +436,6 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
             Toast toast = Toast.makeText(getApplicationContext(), "Saved successfully", Toast.LENGTH_LONG);
             toast.show();
-
 
         }
         catch (Exception e)
@@ -522,7 +511,6 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
                      }
                  });
             }
-            
           
           //*********************//
             if (action.equals(com.mdex.venusAlpha01.UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
@@ -625,7 +613,6 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         unbindService(mServiceConnection);
         mService.stopSelf();
         mService= null;
-       
     }
 
     @Override
@@ -814,7 +801,8 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
      * @throws
      */
 
-    private void onCreate_UI(){
+    private void UI_onCreate(){
+
         edtBatteryLevel = (TextView) findViewById(R.id.TV_BatteryLevel);
         edtLastPacketTime = (TextView)findViewById(R.id.TV_CurTime);
         tvADC_HexaMain = (TextView) findViewById(R.id.PacketHexaMain);
@@ -901,11 +889,11 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
         //  UI - cell data and color
         {
-            int nSensorValue = 0;
+            int sensor_value = 0;
             int cell_index = 0;
             int row_index = 0;
 
-            hmap = new HashMap<String, Object>();
+            hash_map = new HashMap<String, Object>();
 
             long now = System.currentTimeMillis();
             Date date = new Date(now);
@@ -914,67 +902,52 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
 
             for (cell_index = 0 ; cell_index < PacketParser.def_CELL_COUNT_ROW0 ; cell_index++){
-                nSensorValue = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
-                atvChairCells_Row0[cell_index].setText(String.format("%d", nSensorValue));
-                atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (nSensorValue << 24) );
+                sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
+                atvChairCells_Row0[cell_index].setText(String.format("%d", sensor_value));
+                atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24) );
 
-              /*  if(atvChairCells_Row0[cell_index].getText().toString().length()>2){
-                    atvChairCells_Row0[cell_index].setTextSize(10);
-                }else{
-                    atvChairCells_Row0[cell_index].setTextSize(10);
-                }*/
 
                 if (mSave_Flag==true){
-                    //hmap.put("0_" + cell_index ,  atvChairCells_Row0[cell_index].getText());
 
                     String nPoint = atvChairCells_Row0[cell_index].getText().toString();
 
-                    if(positionCSV==null){
-                        positionCSV = formatDate + "," + nPoint + ",";
+                    if(mPosition_Csv==null){
+                        mPosition_Csv = formatDate + "," + nPoint + ",";
 
                     }else{
 
                         if(cell_index==0){
-                            positionCSV =  positionCSV + formatDate + ","  + nPoint + ",";
+                            mPosition_Csv =  mPosition_Csv + formatDate + ","  + nPoint + ",";
 
                         }else{
-                            positionCSV =  positionCSV  + nPoint + ",";
+                            mPosition_Csv =  mPosition_Csv  + nPoint + ",";
                         }
                     }
-
-                /*if(Integer.parseInt(nPoint) > 0){
-                    mPointTxt.append("0_" + cell_index + "," + nPoint + "///");
-                }*/
-
                 }
 
             }
 
             row_index = 1;
             for (cell_index = 0 ; cell_index < PacketParser.def_CELL_COUNT_ROW1 ; cell_index++){
-                nSensorValue = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
-                atvChairCells_Row1[cell_index].setText(String.format("%d", nSensorValue));
-                atvChairCells_Row1[cell_index].setBackgroundColor(0x00FF0000 | (nSensorValue << 24) );
+                sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
+                atvChairCells_Row1[cell_index].setText(String.format("%d", sensor_value));
+                atvChairCells_Row1[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24) );
 
                 String nPoint1 = atvChairCells_Row1[cell_index].getText().toString();
 
                 if (mSave_Flag==true){
-                    //hmap.put("1_" + cell_index ,  atvChairCells_Row0[cell_index].getText());
-
 
                     if(cell_index < 15 ){
-                        positionCSV = positionCSV + nPoint1 + ",";
+                        mPosition_Csv = mPosition_Csv + nPoint1 + ",";
 
                     }else{
-                        positionCSV =  positionCSV  + nPoint1 + "\r\n";
+                        mPosition_Csv =  mPosition_Csv  + nPoint1 + "\r\n";
                     }
 
                 }
             }
 
         }
-
-            //list.add(hmap);
 
         // UI LOG : adc data
         tvADC_HexaMain.setText(m_PacketParser.textHexaMain);
@@ -1006,7 +979,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         if(m_isAlarm_2000MS == true)
             return false;
 
-        m_Player.start();
+        //m_Player.start();
         m_isAlarm_2000MS = true;
         return true;
     }
