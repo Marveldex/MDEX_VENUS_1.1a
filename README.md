@@ -13,7 +13,7 @@ https://github.com/hubuhubu/Android-nRF-UART
 
 Main UI 
 <div align = "center">
-<img src="https://github.com/Marveldex/MDEX_VENUS_1.1a/blob/master/Img/MainUi.png" />
+<img src="https://github.com/Marveldex/MDEX_VENUS_1.1a/blob/master/Img/32_20470426.png" />
 </div>
 
 
