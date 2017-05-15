@@ -154,6 +154,8 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMdd_HHmmss");
     String formatDate = sdfNow.format(date);
 
+    private int toast_flag = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,6 +220,8 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         				}
         			}
                 }
+
+                toast_flag = 0;
             }
         });
 
@@ -899,7 +903,12 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
             m_Mode_TxtView.setText("본 어플 실행시 보드의 딥스위치B를 OFF하세요");
             //toast 보여주기
-            toast.show();
+
+            if(toast_flag == 0 ){
+                toast.show();
+                toast_flag = toast_flag + 1;
+            }
+
 
 
         }
