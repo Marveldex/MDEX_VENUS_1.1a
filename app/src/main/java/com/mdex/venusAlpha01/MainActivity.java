@@ -778,8 +778,8 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     long m_PostureKeepTimeMS = 0;
 
     MediaPlayer m_Player;
-
-    private int mCH10 = 0;
+    private String m_Mode_Info;
+    private TextView m_Mode_TxtView;
 
     protected void onRadioClicked(View view){
         switch (view.getId()){
@@ -862,6 +862,8 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         m_Player.setLooping(false);
         //m_Player.start();
 
+        m_Mode_TxtView = (TextView)findViewById(R.id.MODE_INFO);
+
     }
 
     /**
@@ -883,6 +885,24 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
         if(m_PacketParser.isPacketCompleted() == false)
             return;
+
+        //Mode Check
+        m_Mode_Info = PacketParser.Mode_Info;
+        Toast toast = Toast.makeText(getApplicationContext(), "딥스위치 B를 OFF 하세요", Toast.LENGTH_LONG);
+
+        if(m_Mode_Info == "M" || m_Mode_Info == "S"){
+
+            m_Mode_TxtView.setText("");
+            toast.cancel();
+
+        }else if(m_Mode_Info == "L" || m_Mode_Info == "R"){
+
+            m_Mode_TxtView.setText("본 어플 실행시 보드의 딥스위치B를 OFF하세요");
+            //toast 보여주기
+            toast.show();
+
+
+        }
 
         //  UI - battery level
         edtBatteryLevel.setText(String.format("Battery level : [%2d%%]", PacketParser.getBatteryLevel()));

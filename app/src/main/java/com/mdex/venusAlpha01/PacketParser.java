@@ -5,6 +5,8 @@ package com.mdex.venusAlpha01;
  */
 
 
+import android.widget.Switch;
+
 /**
  *
  * @details 압력세서로부터 전달 받은 데이터를 처리하여 직관적인 값으로 변환하고 사용할 변수에 Setting
@@ -27,10 +29,15 @@ public class PacketParser {
     public static byte [] nChairVal_Row1 = new byte [def_CELL_COUNT_ROW1];
     public static byte [] nChairVal_Row2 = new byte [def_CELL_COUNT_ROW2];
 
+    public static String Mode_Info = null;
+
     final byte [] packet_data_32bit = new byte[20];
 
     public static final byte [] adcValue_M = new byte[20]; // ADC of Main
     public static final byte [] adcValue_S = new byte[20]; // ADC of Shield
+
+    public static final byte [] adcValue_L = new byte[20]; // ADC of Shield
+    public static final byte [] adcValue_R = new byte[20]; // ADC of Shield
 
     public static boolean m_isPacketCompleted = false;
 
@@ -54,6 +61,14 @@ public class PacketParser {
         return 0;
     }
 
+   /* public static byte getModeInfo(String mode_Info){
+
+        if (mode_Info =='M'){
+
+        }
+        return 0;
+    }*/
+
     /**
      *
      * @brief    전달 받은 압력 값을 구분하고 해당 값들을 변수에 Setting
@@ -70,7 +85,7 @@ public class PacketParser {
 
         int cell_index = 0;
 
-        // select board
+        // select board m/s  - venus
         if( packet_data_32bit[0] == 'M'){
             textHexaMain = String.format("Ma: %3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d",
                     packet_data_32bit[1], packet_data_32bit[2], packet_data_32bit[3], packet_data_32bit[4], packet_data_32bit[5], packet_data_32bit[6], packet_data_32bit[7], packet_data_32bit[8],
@@ -79,6 +94,7 @@ public class PacketParser {
             System.arraycopy(packet_data_32bit, 1, adcValue_M, 0, 16); // 1: offset of source, 0: offset of dest, 16: length)
 
             m_isPacketCompleted = false;
+            Mode_Info = "M";
         }
         else if( packet_data_32bit[0] == 'S') {
             textHexaShield = String.format("Sh: %3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d",
@@ -87,6 +103,30 @@ public class PacketParser {
             System.arraycopy(packet_data_32bit, 1, adcValue_S, 0, 16); // 1: offset of source, 0: offset of dest, 16: length)
 
             m_isPacketCompleted = true;
+            Mode_Info = "S";
+
+         //l/r --> seat
+        }else if(packet_data_32bit[0] == 'L') {
+
+            textHexaMain = String.format("Ma: %3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d",
+                    packet_data_32bit[1], packet_data_32bit[2], packet_data_32bit[3], packet_data_32bit[4], packet_data_32bit[5], packet_data_32bit[6], packet_data_32bit[7], packet_data_32bit[8],
+                    packet_data_32bit[9], packet_data_32bit[10], packet_data_32bit[11], packet_data_32bit[12], packet_data_32bit[13], packet_data_32bit[14], packet_data_32bit[15], packet_data_32bit[16]);
+
+            System.arraycopy(packet_data_32bit, 1, adcValue_L, 0, 16); // 1: offset of source, 0: offset of dest, 16: length)
+
+            m_isPacketCompleted = false;
+            Mode_Info = "L";
+
+        }else if(packet_data_32bit[0] == 'R') {
+
+            textHexaShield = String.format("Sh: %3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d,%3d",
+                    packet_data_32bit[1], packet_data_32bit[2], packet_data_32bit[3], packet_data_32bit[4], packet_data_32bit[5], packet_data_32bit[6], packet_data_32bit[7], packet_data_32bit[8],
+                    packet_data_32bit[9], packet_data_32bit[10], packet_data_32bit[11], packet_data_32bit[12], packet_data_32bit[13], packet_data_32bit[14], packet_data_32bit[15], packet_data_32bit[16]);
+            System.arraycopy(packet_data_32bit, 1, adcValue_R, 0, 16); // 1: offset of source, 0: offset of dest, 16: length)
+
+            m_isPacketCompleted = true;
+            Mode_Info = "R";
+
         }
 
         //  assemble two packets into one.
@@ -131,7 +171,44 @@ public class PacketParser {
             nChairVal_Row1[cell_index++] = adcValue_S[14];
             nChairVal_Row1[cell_index++] = adcValue_S[15];
 
-         }
+         }else if(packet_data_32bit[0] == 'R'){
+
+            nChairVal_Row0[cell_index++] = adcValue_L[0];
+            nChairVal_Row0[cell_index++] = adcValue_L[1];
+            nChairVal_Row0[cell_index++] = adcValue_L[2];
+            nChairVal_Row0[cell_index++] = adcValue_L[3];
+            nChairVal_Row0[cell_index++] = adcValue_L[4];
+            nChairVal_Row0[cell_index++] = adcValue_L[5];
+            nChairVal_Row0[cell_index++] = adcValue_L[6];
+            nChairVal_Row0[cell_index++] = adcValue_L[7];
+            nChairVal_Row0[cell_index++] = adcValue_L[8];
+            nChairVal_Row0[cell_index++] = adcValue_L[9];
+            nChairVal_Row0[cell_index++] = adcValue_L[10];
+            nChairVal_Row0[cell_index++] = adcValue_L[11];
+            nChairVal_Row0[cell_index++] = adcValue_L[12];
+            nChairVal_Row0[cell_index++] = adcValue_L[13];
+            nChairVal_Row0[cell_index++] = adcValue_L[14];
+            nChairVal_Row0[cell_index++] = adcValue_L[15];
+
+            cell_index = 0;
+            nChairVal_Row1[cell_index++] = adcValue_R[0];
+            nChairVal_Row1[cell_index++] = adcValue_R[1];
+            nChairVal_Row1[cell_index++] = adcValue_R[2];
+            nChairVal_Row1[cell_index++] = adcValue_R[3];
+            nChairVal_Row1[cell_index++] = adcValue_R[4];
+            nChairVal_Row1[cell_index++] = adcValue_R[5];
+            nChairVal_Row1[cell_index++] = adcValue_R[6];
+            nChairVal_Row1[cell_index++] = adcValue_R[7];
+            nChairVal_Row1[cell_index++] = adcValue_R[8];
+            nChairVal_Row1[cell_index++] = adcValue_R[9];
+            nChairVal_Row1[cell_index++] = adcValue_R[10];
+            nChairVal_Row1[cell_index++] = adcValue_R[11];
+            nChairVal_Row1[cell_index++] = adcValue_R[12];
+            nChairVal_Row1[cell_index++] = adcValue_R[13];
+            nChairVal_Row1[cell_index++] = adcValue_R[14];
+            nChairVal_Row1[cell_index++] = adcValue_R[15];
+
+        }
 
 //      parse battery level
         {
