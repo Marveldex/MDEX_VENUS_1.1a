@@ -19,7 +19,10 @@ Main UI
 
 Protocol
 <div align = "center">
-<img src="https://github.com/Marveldex/MDEX_SEAR_31a0/blob/master/Image/protocol.png" />
+<img src="https://github.com/Marveldex/MDEX_VENUS_1.1a/blob/master/Img/VENUS_PROTOCAOL1.png" />
+</div>
+<div align = "center">
+<img src="https://github.com/Marveldex/MDEX_VENUS_1.1a/blob/master/Img/VENUS_PROTOCOL2.png" />
 </div>
 
 
