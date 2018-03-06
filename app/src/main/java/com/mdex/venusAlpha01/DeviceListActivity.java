@@ -22,29 +22,19 @@
  */
 package com.mdex.venusAlpha01;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,6 +50,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @details 연결 할  블루투스 장치를 관리하는 class
@@ -74,25 +69,25 @@ import android.widget.Toast;
  */
 
 public class DeviceListActivity extends Activity {
-    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothAdapter m_BluetoothAdapter;
 
-   // private BluetoothAdapter mBtAdapter;
-    private TextView mEmptyList;
+    // private BluetoothAdapter mBtAdapter;
+    private TextView m_EmptyList;
     public static final String TAG = "DeviceListActivity";
-    
-    List<BluetoothDevice> deviceList;
-    private DeviceAdapter deviceAdapter;
+
+    List<BluetoothDevice> m_DeviceList;
+    private DeviceAdapter m_DeviceAdapter;
     private ServiceConnection onService = null;
-    Map<String, Integer> devRssiValues;
+    Map<String, Integer> m_DevRssiValues;
     private static final long SCAN_PERIOD = 10000; //scanning for 10 seconds
-    private Handler mHandler;
-    private boolean mScanning;
+    private Handler m_Handler;
+    private boolean m_Scanning;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-    	
+
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
@@ -100,7 +95,7 @@ public class DeviceListActivity extends Activity {
         android.view.WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
         layoutParams.gravity=Gravity.TOP;
         layoutParams.y = 200;
-        mHandler = new Handler();
+        m_Handler = new Handler();
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -112,23 +107,23 @@ public class DeviceListActivity extends Activity {
         // BluetoothAdapter through BluetoothManager.
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        m_BluetoothAdapter = bluetoothManager.getAdapter();
 
         // Checks if Bluetooth is supported on the device.
-        if (mBluetoothAdapter == null) {
+        if (m_BluetoothAdapter == null) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
         populateList();
-        mEmptyList = (TextView) findViewById(R.id.empty);
+        m_EmptyList = (TextView) findViewById(R.id.empty);
         Button cancelButton = (Button) findViewById(R.id.btn_cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	
-            	if (mScanning==false) scanLeDevice(true); 
-            	else finish();
+
+                if (m_Scanning==false) scanLeDevice(true);
+                else finish();
             }
         });
 
@@ -145,15 +140,15 @@ public class DeviceListActivity extends Activity {
     private void populateList() {
         /* Initialize device list container */
         Log.d(TAG, "populateList");
-        deviceList = new ArrayList<BluetoothDevice>();
-        deviceAdapter = new DeviceAdapter(this, deviceList);
-        devRssiValues = new HashMap<String, Integer>();
+        m_DeviceList = new ArrayList<BluetoothDevice>();
+        m_DeviceAdapter = new DeviceAdapter(this, m_DeviceList);
+        m_DevRssiValues = new HashMap<String, Integer>();
 
         ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
-        newDevicesListView.setAdapter(deviceAdapter);
+        newDevicesListView.setAdapter(m_DeviceAdapter);
         newDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
-           scanLeDevice(true);
+        scanLeDevice(true);
 
     }
 
@@ -169,23 +164,23 @@ public class DeviceListActivity extends Activity {
         final Button cancelButton = (Button) findViewById(R.id.btn_cancel);
         if (enable) {
             // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(new Runnable() {
+            m_Handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-					mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                        
+                    m_Scanning = false;
+                    m_BluetoothAdapter.stopLeScan(mLeScanCallback);
+
                     cancelButton.setText(R.string.scan);
 
                 }
             }, SCAN_PERIOD);
 
-            mScanning = true;
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            m_Scanning = true;
+            m_BluetoothAdapter.startLeScan(mLeScanCallback);
             cancelButton.setText(R.string.cancel);
         } else {
-            mScanning = false;
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            m_Scanning = false;
+            m_BluetoothAdapter.stopLeScan(mLeScanCallback);
             cancelButton.setText(R.string.scan);
         }
 
@@ -202,17 +197,17 @@ public class DeviceListActivity extends Activity {
     private BluetoothAdapter.LeScanCallback mLeScanCallback =
             new BluetoothAdapter.LeScanCallback() {
 
-        @Override
-        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-            runOnUiThread(new Runnable() {
                 @Override
-                public void run() {
-                	
-                              addDevice(device,rssi);
+                public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            addDevice(device,rssi);
+                        }
+                    });
                 }
-            });
-        }
-    };
+            };
 
     /**
      *
@@ -225,30 +220,30 @@ public class DeviceListActivity extends Activity {
     private void addDevice(BluetoothDevice device, int rssi) {
         boolean deviceFound = false;
 
-        for (BluetoothDevice listDev : deviceList) {
+        for (BluetoothDevice listDev : m_DeviceList) {
             if (listDev.getAddress().equals(device.getAddress())) {
                 deviceFound = true;
                 break;
             }
         }
-        
-        
-        devRssiValues.put(device.getAddress(), rssi);
-        if (!deviceFound) {
-        	deviceList.add(device);
-            mEmptyList.setVisibility(View.GONE);
-                 	
-        	
 
-            
-            deviceAdapter.notifyDataSetChanged();
+
+        m_DevRssiValues.put(device.getAddress(), rssi);
+        if (!deviceFound) {
+            m_DeviceList.add(device);
+            m_EmptyList.setVisibility(View.GONE);
+
+
+
+
+            m_DeviceAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-       
+
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -257,15 +252,15 @@ public class DeviceListActivity extends Activity {
     @Override
     public void onStop() {
         super.onStop();
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-    
+        m_BluetoothAdapter.stopLeScan(mLeScanCallback);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-        
+        m_BluetoothAdapter.stopLeScan(mLeScanCallback);
+
     }
 
 
@@ -278,25 +273,25 @@ public class DeviceListActivity extends Activity {
      * @throws
      */
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
-    	
+
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            BluetoothDevice device = deviceList.get(position);
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-  
+            BluetoothDevice device = m_DeviceList.get(position);
+            m_BluetoothAdapter.stopLeScan(mLeScanCallback);
+
             Bundle b = new Bundle();
-            b.putString(BluetoothDevice.EXTRA_DEVICE, deviceList.get(position).getAddress());
+            b.putString(BluetoothDevice.EXTRA_DEVICE, m_DeviceList.get(position).getAddress());
 
             Intent result = new Intent();
             result.putExtras(b);
             setResult(Activity.RESULT_OK, result);
             finish();
-        	
+
         }
     };
 
 
-    
+
     protected void onPause() {
         super.onPause();
         scanLeDevice(false);
@@ -355,15 +350,29 @@ public class DeviceListActivity extends Activity {
             final TextView tvname = ((TextView) vg.findViewById(R.id.name));
             final TextView tvpaired = (TextView) vg.findViewById(R.id.paired);
             final TextView tvrssi = (TextView) vg.findViewById(R.id.rssi);
+            final TextView tvlastdevice = (TextView) vg.findViewById(R.id.lastdevice);
 
             tvrssi.setVisibility(View.VISIBLE);
-            byte rssival = (byte) devRssiValues.get(device.getAddress()).intValue();
+            byte rssival = (byte) m_DevRssiValues.get(device.getAddress()).intValue();
             if (rssival != 0) {
                 tvrssi.setText("Rssi = " + String.valueOf(rssival));
             }
 
             tvname.setText(device.getName());
             tvadd.setText(device.getAddress());
+            //최근 연결 디바이스와 비교하여 표시
+            SharedPreferences pref = getSharedPreferences("MacAddr", Activity.MODE_PRIVATE);
+            String lastAddr  = pref.getString("MacAddr", "00");
+
+            if(lastAddr.equals(device.getAddress())){
+                tvlastdevice.setTextColor(Color.BLUE);
+                tvlastdevice.setText("Last Device");
+
+            }else{
+                tvlastdevice.setText("");
+            }
+
+
             if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                 Log.i(TAG, "device::"+device.getName());
                 tvname.setTextColor(Color.WHITE);
@@ -373,7 +382,7 @@ public class DeviceListActivity extends Activity {
                 tvpaired.setText(R.string.paired);
                 tvrssi.setVisibility(View.VISIBLE);
                 tvrssi.setTextColor(Color.WHITE);
-                
+
             } else {
                 tvname.setTextColor(Color.WHITE);
                 tvadd.setTextColor(Color.WHITE);

@@ -46,6 +46,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -61,14 +62,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.mdex.venusAlpha01.R;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -81,6 +79,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.os.SystemClock.elapsedRealtime;
 
@@ -126,7 +126,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     TextView mRemoteRssiVal;
     RadioGroup mRg;
     private int mState = UART_PROFILE_DISCONNECTED;
-    private com.mdex.venusAlpha01.UartService mService = null;
+    private UartService mService = null;
     private BluetoothDevice mDevice = null;
     private BluetoothAdapter mBtAdapter = null;
     private ListView messageListView;
@@ -140,6 +140,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     Button mSave_Stop;
     Button mLeft_Btn;
     Button mRight_Btn;
+    SharedPreferences pref;
 
     private String mPosition_Csv = null;
     Map<String, Object> hash_map = null;
@@ -166,6 +167,9 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
             finish();
             return;
         }
+
+        pref = getSharedPreferences("MacAddr", Activity.MODE_PRIVATE);
+
         messageListView = (ListView) findViewById(R.id.listMessage);
         listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
         messageListView.setAdapter(listAdapter);
@@ -360,9 +364,9 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         public void onServiceDisconnected(ComponentName classname) {
             if(mService != null) {
                 //mService.disconnect(mDevice);
-                //mService.disconnect();
+                mService.disconnect();
             }
-            mService = null;
+            //mService = null;
         }
     };
 
@@ -462,7 +466,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         
         //Handler events that received from UART service 
         public void handleMessage(Message msg) {
-  
+            Log.i(TAG, "Uart service handleMessage message= " + msg);
         }
     };
 
@@ -492,6 +496,11 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
                          ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName()+ " - connected");
                          listAdapter.add("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
                          messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                         //연결 완료  - 맥어드레스 저장
+                         //업데이트
+                         SharedPreferences.Editor editor = pref.edit();
+                         editor.putString("MacAddr",mDevice.getAddress());
+                         editor.commit();
                          mState = UART_PROFILE_CONNECTED;
                      }
             	 });
@@ -515,10 +524,12 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
                      }
                  });
             }
-          
+
+
           //*********************//
             if (action.equals(com.mdex.venusAlpha01.UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
              	 mService.enableTXNotification();
+                Log.d(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
             }
           //*********************//
             if (action.equals(com.mdex.venusAlpha01.UartService.ACTION_DATA_AVAILABLE)) {
@@ -588,6 +599,17 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         intentFilter.addAction(com.mdex.venusAlpha01.UartService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(com.mdex.venusAlpha01.UartService.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(com.mdex.venusAlpha01.UartService.DEVICE_DOES_NOT_SUPPORT_UART);
+        //      gap messages
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+        intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
+        //intentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
+
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
         return intentFilter;
     }
     @Override
@@ -758,7 +780,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     private TextView [] atvChairCells_Row2 = new TextView[PacketParser.def_CELL_COUNT_ROW2];
 
     private TextView edtCOMLog;
-
+    private TextView mtv_BlindState, mtv_BlindStartTime, mtv_BlindElapsedTime;
     PacketParser m_PacketParser = new PacketParser();
 
     int def_UI_SERO_START_X = 92;
@@ -779,7 +801,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     }
 
     POSTURE_tag m_PostureState;
-    long m_PostureKeepTimeMS = 0;
+    long m_PostureOriginTimeMS = elapsedRealtime();
 
     MediaPlayer m_Player;
     private String m_Mode_Info;
@@ -811,6 +833,10 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         edtLastPacketTime = (TextView)findViewById(R.id.TV_CurTime);
         tvADC_HexaMain = (TextView) findViewById(R.id.PacketHexaMain);
         tvADC_HexaShield = (TextView) findViewById(R.id.PacketHexaShield);
+
+        mtv_BlindState = (TextView)findViewById(R.id.TV_BLIND_STATE);
+        mtv_BlindStartTime = (TextView)findViewById(R.id.TV_BLIND_TIME_START);
+        mtv_BlindElapsedTime = (TextView)findViewById(R.id.TV_BLIND_TIME_ELAPSED);
 
         cell_index = 0;
         atvChairCells_Row0[cell_index++] =(TextView)findViewById(R.id.TV_CHAIR_0_0);
@@ -868,8 +894,61 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
 
         m_Mode_TxtView = (TextView)findViewById(R.id.MODE_INFO);
 
+
+        m_ConnectionMonitorTimer.schedule(new com.mdex.venusAlpha01.MainActivity.TimerTask_ConnectionMonitor(), 500,TIMER_PERIOD_MONITOR);
     }
 
+    private Timer m_ConnectionMonitorTimer  = new Timer();
+    private final int TIMER_PERIOD_MONITOR  = 1000; // 1000 : 1 sec
+    int m_Blind_ElapsedTime = 0;
+    int m_Blind_ElapsedTime_Last= 0;
+    private static final int THRESHOLD_BLIND_SEC = 3;  // THRESHOLD_BLIND_SEC : threshold to decide blind state
+    private static final int CONN_STATE_DISCONNECT = 0;
+    private static final int CONN_STATE_CONNECT_OK = 1;
+    private static final int CONN_STATE_CONNECT_BLIND = 2;
+    int m_AutoConn_State = CONN_STATE_DISCONNECT;
+
+    private class TimerTask_ConnectionMonitor extends TimerTask {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(mState == UART_PROFILE_DISCONNECTED) {
+                        m_AutoConn_State = CONN_STATE_DISCONNECT;
+                        if(com.mdex.venusAlpha01.UartService.getIsDisconnIntentional() == false) {
+                            //  This disconnect message is...
+                            //  not occurred by device disconnect request. (Device disconnect doesn't make disconnect message in phone)
+                            //  not occurred by phone disconnect request. (Phone disconnect request make UartService.m_is_Disconnect_Intentional flag be true)
+                            //  occurred only when this application is just launched. So reconnection needs device mac info to connect.
+                        }
+                        return;
+                    }
+
+                    //  case (m_State == UART_PROFILE_CONNECTED)
+                    m_Blind_ElapsedTime++;
+                    if(THRESHOLD_BLIND_SEC <= m_Blind_ElapsedTime) {
+                        m_Blind_ElapsedTime_Last = m_Blind_ElapsedTime;
+                        //  first time
+                        if(m_Blind_ElapsedTime_Last == THRESHOLD_BLIND_SEC) {
+                            m_AutoConn_State = CONN_STATE_CONNECT_BLIND;
+
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
+                            Calendar cal = Calendar.getInstance();
+                            String time_str = dateFormat.format(cal.getTime());
+                            mtv_BlindStartTime.setText("Last blind : " + time_str);
+
+                            mtv_BlindState.setText("State : Blind");
+                        }
+                        mtv_BlindElapsedTime.setText(m_Blind_ElapsedTime_Last + " sec");
+                    }
+                    else {
+                        return;
+                    }
+                }
+            });
+        }
+    }
     /**
      *
      * @brief 변수에 value setting
@@ -878,7 +957,7 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
      * @return
      * @throws
      */
-    private void UI_showParsedData(){
+    private void UI_showParsedData() {
         // last time packet received
         {
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
@@ -887,113 +966,120 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
             edtLastPacketTime.setText("Last packet : " + time_str);
         }
 
-        if(m_PacketParser.isPacketCompleted() == false)
+        if (m_PacketParser.isPacketCompleted() == false)
             return;
 
         //Mode Check
         m_Mode_Info = PacketParser.Mode_Info;
         Toast toast = Toast.makeText(getApplicationContext(), "딥스위치 B를 OFF 하세요", Toast.LENGTH_LONG);
 
-        if(m_Mode_Info == "M" || m_Mode_Info == "S"){
+        if (m_Mode_Info == "M" || m_Mode_Info == "S") {
 
             m_Mode_TxtView.setText("");
             toast.cancel();
 
-        }else if(m_Mode_Info == "L" || m_Mode_Info == "R"){
+        } else if (m_Mode_Info == "L" || m_Mode_Info == "R") {
 
             m_Mode_TxtView.setText("본 어플 실행시 보드의 딥스위치B를 OFF하세요");
             //toast 보여주기
 
-            if(toast_flag == 0 ){
+            if (toast_flag == 0) {
                 toast.show();
                 toast_flag = toast_flag + 1;
             }
 
+            // last time packet received
+            {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                String time_str = dateFormat.format(cal.getTime());
+                edtLastPacketTime.setText(getString(R.string.fmt_time_last_packet) + time_str);
+
+                m_AutoConn_State = CONN_STATE_CONNECT_OK;
+                m_Blind_ElapsedTime = 0;
+                mtv_BlindState.setText("State : Receiving");
+            }
+
+            //  UI - battery level
+            edtBatteryLevel.setText(String.format("Battery level : [%2d%%]", PacketParser.getBatteryLevel()));
+
+            //  UI - cell data and color
+            {
+                int sensor_value = 0;
+                int cell_index = 0;
+                int row_index = 0;
+
+                hash_map = new HashMap<String, Object>();
+
+                long now = System.currentTimeMillis();
+                Date date = new Date(now);
+                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                String formatDate = sdfNow.format(date);
 
 
-        }
-
-        //  UI - battery level
-        edtBatteryLevel.setText(String.format("Battery level : [%2d%%]", PacketParser.getBatteryLevel()));
-
-        //  UI - cell data and color
-        {
-            int sensor_value = 0;
-            int cell_index = 0;
-            int row_index = 0;
-
-            hash_map = new HashMap<String, Object>();
-
-            long now = System.currentTimeMillis();
-            Date date = new Date(now);
-            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String formatDate = sdfNow.format(date);
+                for (cell_index = 0; cell_index < PacketParser.def_CELL_COUNT_ROW0; cell_index++) {
+                    sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
+                    atvChairCells_Row0[cell_index].setText(String.format("%d", sensor_value));
+                    atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24));
 
 
-            for (cell_index = 0 ; cell_index < PacketParser.def_CELL_COUNT_ROW0 ; cell_index++){
-                sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
-                atvChairCells_Row0[cell_index].setText(String.format("%d", sensor_value));
-                atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24) );
+                    if (mSave_Flag == true) {
 
+                        String nPoint = atvChairCells_Row0[cell_index].getText().toString();
 
-                if (mSave_Flag==true){
+                        if (mPosition_Csv == null) {
+                            mPosition_Csv = formatDate + "," + nPoint + ",";
 
-                    String nPoint = atvChairCells_Row0[cell_index].getText().toString();
+                        } else {
 
-                    if(mPosition_Csv==null){
-                        mPosition_Csv = formatDate + "," + nPoint + ",";
+                            if (cell_index == 0) {
+                                mPosition_Csv = mPosition_Csv + formatDate + "," + nPoint + ",";
 
-                    }else{
-
-                        if(cell_index==0){
-                            mPosition_Csv =  mPosition_Csv + formatDate + ","  + nPoint + ",";
-
-                        }else{
-                            mPosition_Csv =  mPosition_Csv  + nPoint + ",";
+                            } else {
+                                mPosition_Csv = mPosition_Csv + nPoint + ",";
+                            }
                         }
                     }
+
                 }
 
-            }
+                row_index = 1;
+                for (cell_index = 0; cell_index < PacketParser.def_CELL_COUNT_ROW1; cell_index++) {
+                    sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
+                    atvChairCells_Row1[cell_index].setText(String.format("%d", sensor_value));
+                    atvChairCells_Row1[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24));
 
-            row_index = 1;
-            for (cell_index = 0 ; cell_index < PacketParser.def_CELL_COUNT_ROW1 ; cell_index++){
-                sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
-                atvChairCells_Row1[cell_index].setText(String.format("%d", sensor_value));
-                atvChairCells_Row1[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24) );
+                    String nPoint1 = atvChairCells_Row1[cell_index].getText().toString();
 
-                String nPoint1 = atvChairCells_Row1[cell_index].getText().toString();
+                    if (mSave_Flag == true) {
 
-                if (mSave_Flag==true){
+                        if (cell_index < 15) {
+                            mPosition_Csv = mPosition_Csv + nPoint1 + ",";
 
-                    if(cell_index < 15 ){
-                        mPosition_Csv = mPosition_Csv + nPoint1 + ",";
+                        } else {
+                            mPosition_Csv = mPosition_Csv + nPoint1 + "\r\n";
+                        }
 
-                    }else{
-                        mPosition_Csv =  mPosition_Csv  + nPoint1 + "\r\n";
                     }
-
                 }
+
             }
 
-        }
-
-        // UI LOG : adc data
-        tvADC_HexaMain.setText(m_PacketParser.textHexaMain);
-        tvADC_HexaShield.setText(m_PacketParser.textHexaShield);
+            // UI LOG : adc data
+            tvADC_HexaMain.setText(m_PacketParser.textHexaMain);
+            tvADC_HexaShield.setText(m_PacketParser.textHexaShield);
 
         }
 
 
-    boolean m_isAlarm_2000MS = false;
-    long m_PostureOriginTimeMS = 0L;
-
-
+        boolean m_isAlarm_2000MS = false;
+        long m_PostureOriginTimeMS = elapsedRealtime();
+    }
 
     private void setPostureState(POSTURE_tag posture_state){
         if(m_PostureState != posture_state) {
-            m_isAlarm_2000MS = false;
-            m_PostureOriginTimeMS = elapsedRealtime();
+            //m_isAlarm_2000MS = false;
+            //m_PostureOriginTimeMS = elapsedRealtime();
         }
 
         //  it's not necessary
@@ -1005,11 +1091,11 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
     }
 
     private boolean makePostureAlarm_2000MS() {
-        if(m_isAlarm_2000MS == true)
+       /* if(m_isAlarm_2000MS == true)
             return false;
 
         //m_Player.start();
-        m_isAlarm_2000MS = true;
+        m_isAlarm_2000MS = true;*/
         return true;
     }
 
