@@ -15,7 +15,7 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="vertical" >
 
             <Button
                 android:id="@+id/btn_select"
@@ -23,6 +23,43 @@
                 android:layout_height="wrap_content"
                 android:padding="12dp"
                 android:text="Connect" />
+
+            <RelativeLayout
+                android:id="@+id/LL_BLIND_TIME_AREA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/whitegrey"
+                android:layout_below="@+id/btn_select"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/TV_BLIND_STATE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="true"
+                    android:maxLength="120"
+                    android:text=""
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/TV_BLIND_TIME_START"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:maxLength="120"
+                    android:text=""
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/TV_BLIND_TIME_ELAPSED"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:maxLength="120"
+                    android:text=""
+                    android:textSize="14dp" />
+            </RelativeLayout>
         </LinearLayout>
 
         <RelativeLayout
@@ -80,6 +117,7 @@
                     android:visibility="gone" />
             </RadioGroup>
             <LinearLayout
+                android:id="@+id/LL_MODE_INFO"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/TV_BatteryLevel"
@@ -693,6 +731,7 @@
                 android:text="LOG"
                 android:textSize="18sp"
                 android:visibility="invisible" />
+
 
             <Button
                 android:id="@+id/Save_Start"
