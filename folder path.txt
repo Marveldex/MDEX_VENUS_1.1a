@@ -1,0 +1,3 @@
+Project path
+src folder should be placed here.
+c:\android source code\MDEX_VENUS_1.1a-master\MDEX_VENUS_1.1a-master\

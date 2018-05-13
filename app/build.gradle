@@ -4,12 +4,12 @@ android {
         config {
             keyAlias 'Sample'
             keyPassword 'mdex1234'
-            storeFile file('D:/Android APK/VENUS_SAMPLE_APK_20170406/Venus_sample.jks')
+            storeFile file('./app/Venus_sample.jks')
             storePassword 'mdex1234'
         }
     }
     compileSdkVersion 18
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId 'com.mdex.venus_Sample_31CH'
         minSdkVersion 18

@@ -969,6 +969,22 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
         if (m_PacketParser.isPacketCompleted() == false)
             return;
 
+
+        // last time packet received
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            String time_str = dateFormat.format(cal.getTime());
+            edtLastPacketTime.setText(getString(R.string.fmt_time_last_packet) + time_str);
+
+            m_AutoConn_State = CONN_STATE_CONNECT_OK;
+            m_Blind_ElapsedTime = 0;
+            mtv_BlindState.setText("State : Receiving");
+        }
+
+        //  UI - battery level
+        edtBatteryLevel.setText(String.format("Battery level : [%2d%%]", PacketParser.getBatteryLevel()));
+
         //Mode Check
         m_Mode_Info = PacketParser.Mode_Info;
         Toast toast = Toast.makeText(getApplicationContext(), "딥스위치 B를 OFF 하세요", Toast.LENGTH_LONG);
@@ -987,89 +1003,76 @@ public class   MainActivity extends Activity implements RadioGroup.OnCheckedChan
                 toast.show();
                 toast_flag = toast_flag + 1;
             }
+        }
 
-            // last time packet received
-            {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm:ss");
-                Calendar cal = Calendar.getInstance();
-                String time_str = dateFormat.format(cal.getTime());
-                edtLastPacketTime.setText(getString(R.string.fmt_time_last_packet) + time_str);
+        //  UI - cell data and color
+        {
+            int sensor_value = 0;
+            int cell_index = 0;
+            int row_index = 0;
 
-                m_AutoConn_State = CONN_STATE_CONNECT_OK;
-                m_Blind_ElapsedTime = 0;
-                mtv_BlindState.setText("State : Receiving");
-            }
+            hash_map = new HashMap<String, Object>();
 
-            //  UI - battery level
-            edtBatteryLevel.setText(String.format("Battery level : [%2d%%]", PacketParser.getBatteryLevel()));
-
-            //  UI - cell data and color
-            {
-                int sensor_value = 0;
-                int cell_index = 0;
-                int row_index = 0;
-
-                hash_map = new HashMap<String, Object>();
-
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String formatDate = sdfNow.format(date);
+            long now = System.currentTimeMillis();
+            Date date = new Date(now);
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String formatDate = sdfNow.format(date);
 
 
-                for (cell_index = 0; cell_index < PacketParser.def_CELL_COUNT_ROW0; cell_index++) {
-                    sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
-                    atvChairCells_Row0[cell_index].setText(String.format("%d", sensor_value));
-                    atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24));
+            for (cell_index = 0; cell_index < PacketParser.def_CELL_COUNT_ROW0; cell_index++) {
+                sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
+                atvChairCells_Row0[cell_index].setText(String.format("%d", sensor_value));
+                atvChairCells_Row0[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24));
 
 
-                    if (mSave_Flag == true) {
+                // save as csv file / row 0...
+                if (mSave_Flag == true) {
 
-                        String nPoint = atvChairCells_Row0[cell_index].getText().toString();
+                    String nPoint = atvChairCells_Row0[cell_index].getText().toString();
 
-                        if (mPosition_Csv == null) {
-                            mPosition_Csv = formatDate + "," + nPoint + ",";
+                    if (mPosition_Csv == null) {
+                        mPosition_Csv = formatDate + "," + nPoint + ",";
+
+                    } else {
+
+                        if (cell_index == 0) {
+                            mPosition_Csv = mPosition_Csv + formatDate + "," + nPoint + ",";
 
                         } else {
-
-                            if (cell_index == 0) {
-                                mPosition_Csv = mPosition_Csv + formatDate + "," + nPoint + ",";
-
-                            } else {
-                                mPosition_Csv = mPosition_Csv + nPoint + ",";
-                            }
+                            mPosition_Csv = mPosition_Csv + nPoint + ",";
                         }
-                    }
-
-                }
-
-                row_index = 1;
-                for (cell_index = 0; cell_index < PacketParser.def_CELL_COUNT_ROW1; cell_index++) {
-                    sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
-                    atvChairCells_Row1[cell_index].setText(String.format("%d", sensor_value));
-                    atvChairCells_Row1[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24));
-
-                    String nPoint1 = atvChairCells_Row1[cell_index].getText().toString();
-
-                    if (mSave_Flag == true) {
-
-                        if (cell_index < 15) {
-                            mPosition_Csv = mPosition_Csv + nPoint1 + ",";
-
-                        } else {
-                            mPosition_Csv = mPosition_Csv + nPoint1 + "\r\n";
-                        }
-
                     }
                 }
 
             }
 
-            // UI LOG : adc data
-            tvADC_HexaMain.setText(m_PacketParser.textHexaMain);
-            tvADC_HexaShield.setText(m_PacketParser.textHexaShield);
+            row_index = 1;
+            for (cell_index = 0; cell_index < PacketParser.def_CELL_COUNT_ROW1; cell_index++) {
+                sensor_value = m_PacketParser.getSensorDataByCoord(row_index, cell_index);
+                atvChairCells_Row1[cell_index].setText(String.format("%d", sensor_value));
+                atvChairCells_Row1[cell_index].setBackgroundColor(0x00FF0000 | (sensor_value << 24));
+
+                String nPoint1 = atvChairCells_Row1[cell_index].getText().toString();
+
+                // save as csv file / row 1...
+                if (mSave_Flag == true) {
+
+                    if (cell_index < 15) {
+                        mPosition_Csv = mPosition_Csv + nPoint1 + ",";
+
+                    } else {
+                        mPosition_Csv = mPosition_Csv + nPoint1 + "\r\n";
+                    }
+
+                }
+            }
 
         }
+
+        // UI LOG : adc data
+        tvADC_HexaMain.setText(m_PacketParser.textHexaMain);
+        tvADC_HexaShield.setText(m_PacketParser.textHexaShield);
+
 
 
         boolean m_isAlarm_2000MS = false;
