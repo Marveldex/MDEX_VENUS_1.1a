@@ -1,17 +1,18 @@
 # MDEX_VENUS_1.1a
 
-This is Sample Application for MDEX_VENUS board & sensor test
+This is Sample Application for VENUS bluetooth measurement board & sensor test
 
 It can be operated only in Android environment.
 
-we use BLE 4.0 communication
+We use BLE 4.0 communication
 
 ================================================================
 
 최신소스가 필요하신 분은 <sales@mdex 쩜 씨오 쩜 케이알>  로 요청해주세요. 단, 메일에 비너스 보드의 사진을 첨부해주시기 바랍니다.
 
-www.mdex.co.kr
-www.mdex-shop.com
+마블덱스    Marveldex Inc.  www.mdex.co.kr
+
+Venus product :  http://mdex-shop.com/product/detail.html?product_no=93&cate_no=145&display_group=1
 
 ================================================================
 
