@@ -7,9 +7,14 @@ It can be operated only in Android environment.
 we use BLE 4.0 communication
 
 ================================================================
+최신소스가 필요하신 분은 <sales@mdex 쩜 씨오 쩜 케이알>  로 요청해주세요. 단, 메일에 비너스 보드의 사진을 첨부해주시기 바랍니다.
+www.mdex.co.kr
+www.mdex-shop.com
 
-노르딕 nrfUART 소스코드 주소
-https://github.com/hubuhubu/Android-nRF-UART
+================================================================
+비너스용 어플은 노르딕 nrfUART 어플을 기반으로 제작된 소스입니다.
+Nordic UART source code : https://github.com/hubuhubu/Android-nRF-UART
+
 
 Main UI 
 <div align = "center">
